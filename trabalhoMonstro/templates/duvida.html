@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Chat Premier League</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #fafafa; /* fundo clarinho */
+            color: #222;
+            padding: 40px 0;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .chat-box {
+            width: 100%;
+            max-width: 720px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 25px 30px;
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+        }
+
+        .chat-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #3a3a99; /* azul escuro da Premier */
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border-bottom: 3px solid #ffb600; /* amarelo da Premier */
+            padding-bottom: 10px;
+        }
+
+        .chat-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .mensagem {
+            margin-bottom: 18px;
+            line-height: 1.4;
+            padding: 12px 20px;
+            border-radius: 12px;
+            max-width: 85%;
+            word-wrap: break-word;
+            font-size: 1rem;
+        }
+
+        .usuario {
+            background: #ffb600; /* amarelo da Premier */
+            color: #2b2b2b;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+            font-weight: 600;
+            box-shadow: 0 1px 6px rgba(255, 182, 0, 0.5);
+        }
+
+        .assistente {
+            background: #3a3a99; /* azul escuro */
+            border: none;
+            color: #fff;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+            font-weight: 500;
+            box-shadow: 0 1px 6px rgba(58, 58, 153, 0.5);
+        }
+
+        .origem {
+            font-style: italic;
+            color: #666;
+            text-align: center;
+            margin: 8px 0 15px 0;
+            font-size: 0.85rem;
+            user-select: none;
+        }
+
+        .juiz {
+            background: #9b59b6; /* roxo Premier */
+            color: #fff;
+            font-weight: 700;
+            font-style: normal;
+            border-radius: 12px;
+            padding: 10px 18px;
+            max-width: 90%;
+            align-self: center;
+            box-shadow: 0 1px 8px rgba(155, 89, 182, 0.5);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .erro {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            max-width: 90%;
+            align-self: center;
+        }
+
+        form {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            padding: 15px 20px;
+            border-radius: 30px;
+            border: 1.8px solid #3a3a99; /* azul Premier */
+            font-size: 1rem;
+            outline: none;
+            background: #fff;
+            color: #222;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ffb600; /* amarelo Premier */
+            box-shadow: 0 0 8px rgba(255, 182, 0, 0.6);
+        }
+
+        button {
+            background: #ffb600; /* amarelo Premier */
+            border: none;
+            border-radius: 30px;
+            padding: 0 25px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #222;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 182, 0, 0.8);
+        }
+
+        button:hover {
+            background: #e6a200;
+            box-shadow: 0 0 14px rgba(230, 162, 0, 0.9);
+        }
+
+        /* Scroll bar customizada */
+        .chat-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-content::-webkit-scrollbar-thumb {
+            background-color: #3a3a99;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-box">
+        <div class="chat-header">Chat Premier League ⚽</div>
+        <div class="chat-content">
+            {% for autor, mensagem in conversa %}
+                <div class="mensagem
+                    {% if autor == "Você" %}usuario
+                    {% elif autor == "Assistente" %}assistente
+                    {% elif autor == "Origem" %}origem
+                    {% elif autor == "Juiz" %}juiz
+                    {% elif autor == "Erro" %}erro
+                    {% else %}mensagem
+                    {% endif %}">
+                    {% if autor == "Origem" %}
+                        📂 Fonte: {{ mensagem }}    
+                    {% elif autor == "Juiz" %}
+                        ⚖️ Avaliação: {{ mensagem }}
+                    {% else %}
+                        <strong>{{ autor }}:</strong> {{ mensagem }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <form method="post">
+            <input type="text" name="duvida" placeholder="Digite sua pergunta sobre Premier League..." required autocomplete="off" />
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <form action="/limpar" method="post">
+    <button type="submit" style="margin-top:10px; background:#e74c3c; color:#fff;">Limpar Chat</button>
+    </form>
+    <script>
+    // Scroll automático para o fim do chat
+    const chatContent = document.getElementById('chat-content');
+    chatContent.scrollTop = chatContent.scrollHeight;
+    </script>
+</body>
+</html>
